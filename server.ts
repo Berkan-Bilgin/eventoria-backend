@@ -11,7 +11,8 @@ connectDatabase();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "1mb" })); // JSON için limiti 1MB olarak ayarla
+app.use(express.urlencoded({ limit: "1mb", extended: true })); // URL-encoded veri için limiti 1MB olarak ayarla
 app.use("/api/publicEvent", eventRouter);
 app.use("/api/user", userRoutes);
 app.use("/api/event", protectEventRouter);
