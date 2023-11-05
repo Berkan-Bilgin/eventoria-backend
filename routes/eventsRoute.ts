@@ -26,7 +26,20 @@ eventRouter.get("/summary", async (req: Request, res: Response) => {
   try {
     const events = await Event.find(
       {},
-      "id title location category description startDate endDate ticketPrice"
+      "id title location category images description startDate endDate ticketPrice"
+    ).sort({ createdAt: -1 });
+    res.json(events);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
+eventRouter.get("/:category", async (req: Request, res: Response) => {
+  const { category } = req.params;
+  try {
+    const events = await Event.find(
+      { category: category },
+      "id title location category images description startDate endDate ticketPrice"
     ).sort({ createdAt: -1 });
     res.json(events);
   } catch (error: any) {
@@ -38,6 +51,20 @@ eventRouter.get("/all", async (req: Request, res: Response) => {
   try {
     const events = await Event.find().sort({ createdAt: -1 });
     res.json(events);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
+eventRouter.get("/:id", async (req: Request, res: Response) => {
+  const eventId = req.params.id;
+  try {
+    const event = await Event.findById(eventId);
+    if (event) {
+      res.json(event);
+    } else {
+      res.status(404).send("Event not found");
+    }
   } catch (error: any) {
     res.status(500).send(error.message);
   }
