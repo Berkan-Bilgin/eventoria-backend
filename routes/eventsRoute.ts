@@ -34,7 +34,7 @@ eventRouter.get("/summary", async (req: Request, res: Response) => {
   }
 });
 
-eventRouter.get("/:category", async (req: Request, res: Response) => {
+eventRouter.get("/category/:category", async (req: Request, res: Response) => {
   const { category } = req.params;
   try {
     const events = await Event.find(
@@ -56,7 +56,7 @@ eventRouter.get("/all", async (req: Request, res: Response) => {
   }
 });
 
-eventRouter.get("/:id", async (req: Request, res: Response) => {
+eventRouter.get("/events/:id", async (req: Request, res: Response) => {
   const eventId = req.params.id;
   try {
     const event = await Event.findById(eventId);
@@ -77,6 +77,22 @@ protectEventRouter.post("/", async (req: Request, res: Response) => {
     const newEvent = new Event({ ...req.body, user_id }); // req.body'den gelen verileri kullanarak yeni bir Event oluşturuluyor.
     await newEvent.save(); // Event veritabanına kaydediliyor.
     res.status(201).json(newEvent);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
+// Geçmiş Etkinlikleri Alma
+eventRouter.get("/previous-events", async (req: Request, res: Response) => {
+  try {
+    const currentDate = new Date();
+    const events = await Event.find(
+      {
+        startDate: { $lt: currentDate }, // $lt (less than) operatörü, şu anki tarihten önce olan startDate'leri bulur
+      },
+      "id title location category images description startDate endDate ticketPrice"
+    ).sort({ startDate: -1 }); // Geçmiş etkinlikleri startDate'e göre tersten sıralar
+    res.json(events);
   } catch (error: any) {
     res.status(500).send(error.message);
   }
