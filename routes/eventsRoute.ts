@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import Event from "../models/eventModel"; // Event modelinizi nerede tanımladıysanız, uygun yolu sağlayın.
 
 import requireAuth from "../middleware/requireAuth";
+import { toKebabCase } from "../helpers/to-kebab-case";
+import slugify from "slugify";
 
 const protectEventRouter = express.Router();
 
@@ -26,7 +28,7 @@ eventRouter.get("/summary", async (req: Request, res: Response) => {
   try {
     const events = await Event.find(
       {},
-      "id title location category images description startDate endDate ticketPrice"
+      "id title place placeSlug category images description startDate endDate ticketPrice"
     ).sort({ createdAt: -1 });
     res.json(events);
   } catch (error: any) {
@@ -39,7 +41,20 @@ eventRouter.get("/category/:category", async (req: Request, res: Response) => {
   try {
     const events = await Event.find(
       { category: category },
-      "id title location category images description startDate endDate ticketPrice"
+      "id title place category images description startDate endDate ticketPrice"
+    ).sort({ createdAt: -1 });
+    res.json(events);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
+eventRouter.get("/place/:place", async (req: Request, res: Response) => {
+  const { place } = req.params;
+  try {
+    const events = await Event.find(
+      { placeSlug: place }, //placeSlug üzerinden arama yap route parametre uyuşması için
+      "id title place category images description startDate endDate ticketPrice"
     ).sort({ createdAt: -1 });
     res.json(events);
   } catch (error: any) {
@@ -90,7 +105,7 @@ eventRouter.get("/previous-events", async (req: Request, res: Response) => {
       {
         startDate: { $lt: currentDate }, // $lt (less than) operatörü, şu anki tarihten önce olan startDate'leri bulur
       },
-      "id title location category images description startDate endDate ticketPrice"
+      "id title place category images description startDate endDate ticketPrice"
     ).sort({ startDate: -1 }); // Geçmiş etkinlikleri startDate'e göre tersten sıralar
     res.json(events);
   } catch (error: any) {
