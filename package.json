@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node server.ts",
     "dev": "nodemon server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "update-slugs": "ts-node updatePlaceSlug.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.3",
+    "slugify": "^1.6.6",
     "validator": "^13.11.0"
   },
   "devDependencies": {
