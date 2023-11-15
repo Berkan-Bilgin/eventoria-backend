@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { slugifyMiddleware } from "../middleware/slugifyMiddleware";
 
 const eventSchema = new mongoose.Schema(
   {
@@ -17,6 +18,12 @@ const eventSchema = new mongoose.Schema(
       type: String,
     },
     location: {
+      type: String,
+    },
+    place: {
+      type: String,
+    },
+    placeSlug: {
       type: String,
     },
     startDate: {
@@ -42,6 +49,8 @@ const eventSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+slugifyMiddleware(eventSchema);
 
 const Event = mongoose.model("Event", eventSchema);
 
