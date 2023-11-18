@@ -2,8 +2,6 @@ import express, { Request, Response } from "express";
 import Event from "../models/eventModel"; // Event modelinizi nerede tanımladıysanız, uygun yolu sağlayın.
 
 import requireAuth from "../middleware/requireAuth";
-import { toKebabCase } from "../helpers/to-kebab-case";
-import slugify from "slugify";
 
 const protectEventRouter = express.Router();
 

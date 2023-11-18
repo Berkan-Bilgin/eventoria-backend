@@ -10,7 +10,6 @@ declare module "express" {
 
 // 'req', 'res' ve 'next' parametrelerini tiplemek için Express'in yerleşik tiplerini kullanıyoruz.
 const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.headers);
   const { authorization } = req.headers;
 
   if (!authorization) {
