@@ -7,6 +7,9 @@ const eventSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    titleSlug: {
+      type: String,
+    },
     category: {
       type: String,
     },

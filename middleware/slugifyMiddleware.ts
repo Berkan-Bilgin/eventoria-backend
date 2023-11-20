@@ -3,12 +3,22 @@ import { Schema } from "mongoose";
 
 export const slugifyMiddleware = (schema: Schema) => {
   schema.pre("save", function (next) {
+    // place alanı için slug oluşturma
     if (this.place && this.isModified("place")) {
       this.placeSlug = slugify(this.place, {
         lower: true,
         remove: /[*+~.()'"!:@]/g,
       });
     }
+
+    // title alanı için slug oluşturma
+    if (this.title && this.isModified("title")) {
+      this.titleSlug = slugify(this.title, {
+        lower: true,
+        remove: /[*+~.()'"!:@]/g,
+      });
+    }
+
     next();
   });
 };
