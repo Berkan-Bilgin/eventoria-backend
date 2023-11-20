@@ -8,7 +8,8 @@
     "start": "ts-node server.ts",
     "dev": "nodemon server.ts",
     "build": "tsc",
-    "update-slugs": "ts-node updatePlaceSlug.ts"
+    "update-slugs": "ts-node updatePlaceSlug.ts",
+    "update-titles": "ts-node updateTitleSlug.ts"
   },
   "keywords": [],
   "author": "",

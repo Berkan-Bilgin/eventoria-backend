@@ -83,6 +83,20 @@ eventRouter.get("/events/:id", async (req: Request, res: Response) => {
   }
 });
 
+eventRouter.get("/events/title/:title", async (req: Request, res: Response) => {
+  const { title } = req.params;
+  try {
+    const event = await Event.findOne({ titleSlug: title });
+    if (event) {
+      res.json(event);
+    } else {
+      res.status(404).send("Event not found");
+    }
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
 // Yeni bir event oluşturma route'u
 protectEventRouter.post("/", async (req: Request, res: Response) => {
   try {
