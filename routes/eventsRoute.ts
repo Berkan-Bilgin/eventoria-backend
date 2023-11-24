@@ -34,6 +34,27 @@ eventRouter.get("/summary", async (req: Request, res: Response) => {
   }
 });
 
+eventRouter.get("/filter-events", async (req, res) => {
+  try {
+    const { search } = req.query;
+    let query = {};
+
+    if (search) {
+      query = {
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { place: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+
+    const filteredEvents = await Event.find(query, "title images place");
+    res.json(filteredEvents);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
 eventRouter.get("/category/:category", async (req: Request, res: Response) => {
   const { category } = req.params;
   try {
