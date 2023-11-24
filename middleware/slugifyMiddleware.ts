@@ -7,7 +7,7 @@ export const slugifyMiddleware = (schema: Schema) => {
     if (this.place && this.isModified("place")) {
       this.placeSlug = slugify(this.place, {
         lower: true,
-        remove: /[*+~.()'"!:@]/g,
+        strict: true,
       });
     }
 
@@ -15,7 +15,7 @@ export const slugifyMiddleware = (schema: Schema) => {
     if (this.title && this.isModified("title")) {
       this.titleSlug = slugify(this.title, {
         lower: true,
-        remove: /[*+~.()'"!:@]/g,
+        strict: true,
       });
     }
 
