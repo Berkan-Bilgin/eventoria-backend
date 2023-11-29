@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import Event from "../models/eventModel"; // Event modelinizi nerede tanımladıysanız, uygun yolu sağlayın.
 
 import requireAuth from "../middleware/requireAuth";
+import slugify from "slugify";
 
 const protectEventRouter = express.Router();
 
@@ -34,22 +35,37 @@ eventRouter.get("/summary", async (req: Request, res: Response) => {
   }
 });
 
-eventRouter.get("/filter-events", async (req, res) => {
+eventRouter.get("/filter-events", async (req: Request, res: Response) => {
   try {
-    const { search } = req.query;
-    let query = {};
+    const { search } = req.query as {
+      search?: string;
+    };
+
+    let titleQuery: any = {};
+    let placeQuery: any = {};
 
     if (search) {
-      query = {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { place: { $regex: search, $options: "i" } },
-        ],
-      };
+      const searchSlug = slugify(search, { lower: true, strict: true });
+      titleQuery = { titleSlug: { $regex: new RegExp(searchSlug, "i") } };
+      placeQuery = { placeSlug: { $regex: new RegExp(searchSlug, "i") } };
     }
 
-    const filteredEvents = await Event.find(query, "title images place");
-    res.json(filteredEvents);
+    // Title için filtrelenmiş sonuçları al
+    const titleResults = await Event.find(titleQuery, "title place images");
+
+    // Place için filtrelenmiş sonuçları al ve benzersiz yap
+    const placeResults = await Event.find(placeQuery, "place");
+    const uniquePlaceResults = Array.from(
+      new Set(placeResults.map((e) => e.place))
+    );
+
+    // Sonuçları birleştir
+    const results = {
+      titles: titleResults,
+      places: uniquePlaceResults.map((place) => ({ place })), // Objeye dönüştür
+    };
+
+    res.json(results);
   } catch (error: any) {
     res.status(500).send(error.message);
   }
