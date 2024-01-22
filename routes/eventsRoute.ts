@@ -121,7 +121,7 @@ eventRouter.get("/events/:id", async (req: Request, res: Response) => {
 });
 
 eventRouter.get("/title/:title", async (req: Request, res: Response) => {
-  const { title } = req.params;
+  const title = req.params.title;
   try {
     const event = await Event.findOne({ titleSlug: title });
     if (event) {
